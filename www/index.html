@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+    <meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
+    <meta charset="utf-8" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="msapplication-tap-highlight" content="no" />
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+    <link rel="stylesheet" type="text/css" href="jqm/jquery.mobile.flatui.css" />
+    <link rel="stylesheet" type="text/css" href="css/custom.css" />
+    <script type="text/javascript" src="cordova.js"></script>
+    <script type="text/javascript" src="jqm/jquery-1.11.3.min.js"></script>
+    <script type="text/javascript" src="jqm/jquery.mobile-1.4.5.min.js"></script>
+    <script type="text/javascript" src="js/index.js"></script>
+    <script type="text/javascript" src="js/db.js"></script>
+
+    <script type="text/javascript" charset="utf-8">
+        function onLoad() {
+            document.addEventListener("deviceready", onDeviceReady, true);
+        }
+
+        function exitFromApp() {
+            navigator.notification.confirm("คุณต้องการออกจากเกม ? ", onConfirmExit, "Exit", "ใช่,ไม่ใช่");
+        }
+
+        function onConfirmExit(button) {
+            if (button == 2) { //If User select a No, then return back;
+                return;
+            } else {
+                navigator.app.exitApp(); // If user select a Yes, quit from the app.
+            }
+        }
+    </script>
+    <title>สุภาษิตมหาสนุก</title>
+</head>
+
+<body onload="onLoad();">
+
+    <div data-role="page" id="home" style="background: url(img/bgHome.png);background-size: 100% 100%;">
+        <div data-role="header">
+            <h3 id="txtHead">สุภาษิตไทยมหาสนุก</h3>
+        </div>
+        <div data-role="content">
+            <button onclick="startGame();" id="btnHome" style="background-color:green; border:none;">เล่นเกม ทายภาพ</button>
+            <button onclick="startGameTwo();" id="btnHome" style="background-color:green; border:none;">เล่นเกม เติมคำ</button>
+            <button onclick="viewRank();" id="btnHome" style="background-color:green; border:none;">คะแนนสูงสุด</button>
+            <button name="buttonClick" onclick="exitFromApp()" id="btnHome" style="background-color:green; border:none;">ออก</button>
+        </div>
+    </div>
+
+
+    <!----------------------------------- End of Home ------------------------------------------------>
+
+    <div data-role="page" id="startGame">
+        <div data-role="header">
+            <a href="#" data-icon="back" onclick="refreshPage();" title="Go back"  >กลับ</a>
+            <h1  >สุภาษิตมหาสนุก</h1>
+        </div>
+        <div data-role="content">
+
+            <div id="term1-container">
+                <div class="hbox">
+                    <label id="counter" name="counter" class="tinylabel">30</label>
+
+                </div>
+            </div>
+
+            <label class="leftSide"><b>คะแนน &nbsp; &nbsp;</b></label>
+            <label class="leftSide" id="point" name="point">0</label>
+
+            <label class="rightSide" id="life" name="life">3</label>
+            <label class="rightSide">&nbsp; &nbsp;</label>
+            <img id="picLife" src="img/heart.png" name="picLife" width="20" height="20" class="rightSide" />
+
+            <br>
+            <hr>
+            <center><img id="pic" width="200" height="200" /></center>
+            <hr>
+
+            <a href="#" id="ansOne" class="ui-btn ui-corner-all ui-shadow" onclick="chackAnsOne();"></a>
+            <a href="#" id="ansTwo" class="ui-btn ui-corner-all ui-shadow" onclick="chackAnsTwo();"></a>
+            <a href="#" id="ansThree" class="ui-btn ui-corner-all ui-shadow" onclick="chackAnsThree();"></a>
+            <a href="#" id="ansFour" class="ui-btn ui-corner-all ui-shadow" onclick="chackAnsFour();"></a>
+
+            <input type="hidden" value="" id="ansTrue" name="ansTrue" />
+            <input type="hidden" value="" id="one" name="one" />
+            <input type="hidden" value="" id="two" name="two" />
+            <input type="hidden" value="" id="three" name="three" />
+            <input type="hidden" value="" id="four" name="four" />
+            <input type="hidden" value="3" id="wrong" name="four" />
+
+        </div>
+
+        <div data-role="footer" data-position="fixed">
+            <div data-role="navbar">
+                <ul>
+                    <li><a href="#" onclick="changeQ();" id="changeQ" name="changeQ" data-icon="check">เปลี่ยนคำถาม</a></li>
+                    <li><a href="#" onclick="cutQ();" id="cutQ" name="cutQ" data-icon="search">ตัดคำถาม</a></li>
+                    <li><a href="#" onclick="canWrong();" id="canWrong" data-icon="bullets">ตอบผิด 1 ครั้ง</a></li>
+                </ul>
+            </div>
+
+        </div>
+    </div>
+
+    <!-------------------------------- End of StartGame ---------------------------------------------->
+
+    <div data-role="page" id="gameOver">
+        <div data-role="header">
+            <a href="#home" data-icon="back" onclick="refreshPage();" title="Go back">กลับ</a>
+            <h3 id="txtHead" >หว๊าาาา หมดเวลาสนุกแล้วสิ!!</h3>
+        </div>
+        <div data-role="content">
+            <label for="player">ใส่ชื่อผู้เล่น</label>
+            <input type="text" placeholder="ใส่ชื่อผู้เล่น" value="" id="player" name="player" style="text-align: center;" />
+            <label for="resultPoint">แต้มของคุณ</label>
+            <input type="text" value="" id="resultPoint" name="resultPoint" readonly style="text-align: center;" />
+            <button onclick="insertDB();">เรียบร้อย</button>
+
+
+        </div>
+    </div>
+
+    <!-------------------------------- End of gameOver ----------------------------------------------->
+
+    <!-- <div data-role="page" id="rank">
+        <div data-role="header">
+            <a href="#home" data-icon="back" onclick="refreshPage();" title="Go back">กลับ</a>
+            <h3>คะแนนสูงสุด</h3>
+        </div>
+        <div data-role="content" class="ui-content">
+            <center>
+                <table data-role="table" class="ui-responsive" id="rankTable" border="1">
+                    <thead>
+                        <tr>
+                            <th data-priority="6">อันดับ</th>
+                            <th>ชื่อ</th>
+                            <th data-priority="1">คะแนน</th>
+                        </tr>
+                    </thead>
+                    <tbody id="viewRank">
+
+                    </tbody>
+                </table>
+
+                
+
+            </center>
+        </div>
+    </div> -->
+
+    <div data-role="page" id="rank" data-theme="a">>
+        <div data-role="header">
+
+            <h3>คะแนนสูงสุด</h3>
+        </div>
+        <div data-role="content">
+            <h2></h2>
+            <div id="listArea">
+                <ul id="viewRank" data-role="listview">
+                </ul>
+            </div>
+        </div>
+        <div data-role="footer" data-position="fixed" data-theme="f">
+            <div data-role="navbar">
+                <ul>
+                    <li><a href="#home" data-icon="home" data-theme="f" onclick="refreshPage();" title="Go back">กลับ</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+
+    <!-------------------------------- End of Rank -------------------------------------------------->
+
+    <div data-role="page" id="starGameTwo">
+
+        <div data-role="header">
+            <a href="#home" data-icon="back" onclick="refreshPage();" title="Go back">กลับ</a>
+            <h1 id="txtHead" >สุภาษิตมหาสนุก</h1>
+        </div>
+
+        <div data-role="content">
+
+            <div id="term1-container">
+                <div class="hbox">
+                    <label id="counterTwo" name="counterTwo" class="tinylabel">30</label>
+
+                </div>
+            </div>
+
+            <label class="leftSide"><b>คะแนน &nbsp; &nbsp;</b></label>
+            <label class="leftSide" id="pointTwo" name="pointTwo">0</label>
+
+            <label class="rightSide" id="lifeTwo" name="lifeTwo">3</label>
+            <label class="rightSide">&nbsp; &nbsp;</label>
+            <img id="picLife" src="img/heart.png" name="picLife" width="20" height="20" class="rightSide" />
+
+            <br>
+            <hr>
+            <center><img id="picTwo" width="200" height="200" /></center>
+            <center>
+                <h2 id="labelQuestion"></h2>
+            </center>
+            <hr>
+            <input id="question" name="question" type="hidden" value="" />
+
+            <div class="ui-grid-a">
+                <div class="ui-block-a">
+
+                    <a href="#" id="ansOnes" class="ui-btn ui-corner-all ui-shadow" onclick="chkOne();">1</a>
+                </div>
+                <div class="ui-block-b">
+
+                    <a href="#" id="ansTwos" class="ui-btn ui-corner-all ui-shadow" onclick="chkTwo();">2</a>
+                </div>
+
+            </div>
+            <div class="ui-grid-a">
+                <div class="ui-block-a">
+
+                    <a href="#" id="ansThrees" class="ui-btn ui-corner-all ui-shadow" onclick="chkThree();">3</a>
+                </div>
+                <div class="ui-block-b">
+
+                    <a href="#" id="ansFours" class="ui-btn ui-corner-all ui-shadow" onclick="chkFour();">4</a>
+                </div>
+
+            </div>
+
+            <input type="hidden" value="" id="trueAns" name="tureAns" />
+            <input type="hidden" value="" id="ones" name="ones" />
+            <input type="hidden" value="" id="twos" name="twos" />
+            <input type="hidden" value="" id="threes" name="threes" />
+            <input type="hidden" value="" id="fours" name="fours" />
+        </div>
+
+        <div data-role="footer" data-position="fixed">
+            <div data-role="navbar">
+                <ul>
+                    <li><a href="#" onclick="changeQTwo();" id="changeQTwo" name="changeQTwo" data-icon="check">เปลี่ยนคำถาม</a></li>
+                    <li><a href="#" onclick="cutQTwo();" id="cutQTwo" name="cutQTwo" data-icon="search">ตัดคำถาม</a></li>
+                    <li><a href="#" onclick="canWrongTwo();" id="canWrongTwo" name="canWrongTwo" data-icon="bullets">ตอบผิด 1 ครั้ง</a></li>
+                </ul>
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>
